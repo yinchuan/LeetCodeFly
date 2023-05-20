@@ -33,8 +33,8 @@ with open(filepath, 'w') as f:
     for include in includes:
         f.write("#include <%s>\n" % include)
 
-    f.write("using namespace std;\n")
     f.write(separator + "\n")
+    f.write("using namespace std;\n")
 
     # base code from LeetCode
     f.write(re.sub(r"\xa0", " ", params["code"]))  # replace &nbsp; to ' '
