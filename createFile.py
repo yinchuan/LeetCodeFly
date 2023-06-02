@@ -15,15 +15,34 @@ filepath = Path(params["level"]) / Path("%s.%s" % (filename, "cpp"))
 # include library which could be used, will not be copied to LeetCode
 includes = ['iostream', 'vector', 'algorithm', 'string', 'map']
 
-# @todo declare function parameter and return
+# extract function name, return type, parameter from given code
+code = re.sub(r"\xa0", " ", params["code"]).replace("\n", "")
+match = re.findall("(\w+) (\w+)\((.*)\)", code)
+if not match:
+    print("re fails to find function name")
+    exit()
+returnType = match[0][0]
+funcName = match[0][1]
+parameters = match[0][2]
+parameterNames = [p.strip().split(' ')[1] for p in parameters.split(",")]
+
 driver = '''
 //===== do not copy lines after this to LeetCode
 int main() {
     Solution sol;
-    auto ans = sol.capitalizeTitle();
+    %s ans;
+    %s;
+
+    %s;
+    ans = sol.%s(%s);
     std::cout << ans << std::endl;
 }
-'''
+''' % (returnType,
+       parameters.replace('&', '').replace(',', '\n;'),
+       "=;\n".join(parameterNames),
+       funcName,
+       ", ".join(parameterNames)
+       )
 
 # only lines between separator need to be copied back to LeetCode for submit
 separator = "//#####"
@@ -52,4 +71,3 @@ print("written to file %s" % filepath.name)
 # add new executable, example: add_executable(1528_Shuffle_String Easy/1528_Shuffle_String.cpp)
 with open(Path("CMakeLists.txt"), 'a') as f:
     f.write("\nadd_executable(%s %s)" % (filename, filepath))
-
