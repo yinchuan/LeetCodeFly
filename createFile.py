@@ -15,13 +15,12 @@ filepath = Path(params["level"]) / Path("%s.%s" % (filename, "cpp"))
 # include library which could be used, will not be copied to LeetCode
 includes = ['iostream', 'vector', 'algorithm', 'string', 'map']
 
-# @todo change s to sol
 # @todo declare function parameter and return
 driver = '''
 //===== do not copy lines after this to LeetCode
 int main() {
-    Solution s;
-    auto ans = s.capitalizeTitle();
+    Solution sol;
+    auto ans = sol.capitalizeTitle();
     std::cout << ans << std::endl;
 }
 '''
