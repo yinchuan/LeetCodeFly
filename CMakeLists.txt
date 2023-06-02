@@ -3,3 +3,4 @@ project(LeetCodeFly)
 
 set(CMAKE_CXX_STANDARD 14)
 add_executable(2129_Capitalize_the_Title Easy/2129_Capitalize_the_Title.cpp)
+add_executable(1859_Sorting_the_Sentence Easy/1859_Sorting_the_Sentence.cpp)
