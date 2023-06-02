@@ -15,6 +15,8 @@ filepath = Path(params["level"]) / Path("%s.%s" % (filename, "cpp"))
 # include library which could be used, will not be copied to LeetCode
 includes = ['iostream', 'vector', 'algorithm', 'string', 'map']
 
+# @todo change s to sol
+# @todo declare function parameter and return
 driver = '''
 //===== do not copy lines after this to LeetCode
 int main() {
@@ -47,3 +49,8 @@ with open(filepath, 'w') as f:
     f.write(driver)
 
 print("written to file %s" % filepath.name)
+
+# add new executable, example: add_executable(1528_Shuffle_String Easy/1528_Shuffle_String.cpp)
+with open(Path("CMakeLists.txt"), 'a') as f:
+    f.write("\nadd_executable(%s %s)" % (filename, filepath))
+
