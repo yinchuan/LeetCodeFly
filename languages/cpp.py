@@ -2,85 +2,82 @@ import re
 import logging
 from pathlib import Path
 
-from FuncSignature import FuncSignature
+from lib.abstract_render import AbstractRender
+from lib.FuncSignature import FuncSignature
 
 logger = logging.getLogger(__name__)
 
 
-def extract_func_signature(code: str) -> FuncSignature:
-    # extract function name, return type, parameters
-    code = re.sub(r"\xa0", " ", code).replace("\n", "")
-    match = re.findall("(\w+) (\w+)\((.*)\)", code)
-    if not match:
-        logger.error("fail to extrac function signature.")
-        return FuncSignature('', '', [])
+class Render(AbstractRender):
+    def extract_func_signature(self) -> FuncSignature:
+        # extract function name, return type, parameters
+        match = re.findall("(\w+) (\w+)\((.*)\)", self.params["code"])
+        if not match:
+            logger.error("fail to extrac function signature.")
+            return FuncSignature('', '', [])
 
-    return FuncSignature(
-        match[0][1],
-        match[0][0],
-        [p.strip().split(' ') for p in match[0][2].split(",")]
-    )
+        return FuncSignature(
+            match[0][1],
+            match[0][0],
+            [p.strip().split(' ') for p in match[0][2].split(",")]
+        )
 
+    def get_file_name(self) -> str:
+        return self.params["title"].replace('.', '').replace(' ', '_') + ".cpp"
 
-def get_file_name(title: str) -> str:
-    return title.replace('.', '').replace(' ', '_') + ".cpp"
+    def get_file_path(self) -> Path:
+        # put file in <level>/filename
+        return Path(self.params["level"]) / self.get_file_name()
 
+    def render(self) -> str:
+        func_signature: FuncSignature = self.extract_func_signature()
+        result: str = ""
 
-def get_file_path(level: str, filename: str) -> Path:
-    # put file in <level>/filename
-    return Path(level) / filename
+        # include library which could be used, will not be copied to LeetCode
+        includes = ['iostream', 'vector', 'algorithm', 'string', 'map']
 
+        driver = '''
+        // do not copy lines after this to LeetCode
+        int main() {
+            Solution sol;
+            %s ans;
+            %s;
 
-def render(func_signature: FuncSignature, params) -> str:
-    result: str = ""
+            %s;
+            ans = sol.%s(%s);
+            std::cout << ans << std::endl;
+        }
+        ''' % (func_signature.return_type,
+               func_signature.gen_parameter_declaration(),
+               func_signature.gen_parameter_init(),
+               func_signature.name,
+               func_signature.gen_parameter_pass_in()
+               )
 
-    # include library which could be used, will not be copied to LeetCode
-    includes = ['iostream', 'vector', 'algorithm', 'string', 'map']
+        # only lines between separator need to be copied back to LeetCode for submit
+        separator = "//#####"
 
-    driver = '''
-    // do not copy lines after this to LeetCode
-    int main() {
-        Solution sol;
-        %s ans;
-        %s;
+        # url on LeetCode
+        result += "// %s\n" % self.params["url"]
 
-        %s;
-        ans = sol.%s(%s);
-        std::cout << ans << std::endl;
-    }
-    ''' % (func_signature.return_type,
-           func_signature.gen_parameter_declaration(),
-           func_signature.gen_parameter_init(),
-           func_signature.name,
-           func_signature.gen_parameter_pass_in()
-           )
+        # includes
+        for include in includes:
+            result += "#include <%s>\n" % include
 
-    # only lines between separator need to be copied back to LeetCode for submit
-    separator = "//#####"
+        result += separator + "\n"
+        result += "using namespace std;\n"
 
-    # url on LeetCode
-    result += "// %s\n" % params["url"]
+        # base code from LeetCode
+        result += self.params["code"]
 
-    # includes
-    for include in includes:
-        result += "#include <%s>\n" % include
+        # driver
+        result += "\n"
+        result += separator + "\n"
+        result += driver
 
-    result += separator + "\n"
-    result += "using namespace std;\n"
+        return result
 
-    # base code from LeetCode
-    result += params["code"]
-
-    # driver
-    result += "\n"
-    result += separator + "\n"
-    result += driver
-
-    return result
-
-
-def post_render() -> None:
-    pass
-    # add new executable, example: add_executable(1528_Shuffle_String Easy/1528_Shuffle_String.cpp)
-    # with open(Path("CMakeLists.txt"), 'a') as f:
-    #     f.write("\nadd_executable(%s %s)" % (filename, filepath))
+    def post_render(self, src_root: Path) -> None:
+        # add new executable, example: add_executable(1528_Shuffle_String Easy/1528_Shuffle_String.cpp)
+        with open(src_root / Path("CMakeLists.txt"), 'a') as f:
+            f.write("\nadd_executable(%s %s)" % (self.get_file_name(), self.get_file_path()))
