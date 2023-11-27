@@ -1,11 +1,15 @@
 #!/usr/bin/python3
 
 import sys
+import subprocess
 from pathlib import Path
 
 file = Path(sys.argv[1])
-started = False
 
+process = subprocess.Popen("xclip -selection clipboard", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                           stderr=subprocess.PIPE, text=True)
+
+started = False
 with open(file, 'r') as f:
     while True:
         line = f.readline()
@@ -18,4 +22,6 @@ with open(file, 'r') as f:
             else:
                 started = True
         elif started:
-            sys.stdout.write(line)
+            process.stdin.write(line)
+
+process.stdin.close()

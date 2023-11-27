@@ -3,6 +3,7 @@
 
 import json
 import re
+import subprocess
 from pathlib import Path
 import argparse
 import logging
@@ -21,7 +22,7 @@ if __name__ == "__main__":
                         help='The language to use: %s. default: cpp' % "|".join(get_supported_langs()))
     parser.add_argument("-r", "--root", default=".",
                         help="the root directory to store generated code files. default: '.'")
-    parser.add_argument("params", help="The json data from bookmarklet")
+    # parser.add_argument("params", help="The json data from bookmarklet")
     args = parser.parse_args()
 
     # import languages specific render
@@ -32,8 +33,12 @@ if __name__ == "__main__":
         logger.error(e.msg)
         exit(1)
 
-    # cleaning first
-    params = json.loads(args.params)
+    # read from clipboard
+    result = subprocess.run("xclip -selection clipboard -o", stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
+    params = json.loads(result.stdout)
+
+# cleaning first
+#     params = json.loads(args.params)
     params["code"] = re.sub(r"\xa0", " ", params["code"])  # replace &nbsp; to ' '
 
     render = language.Render(params)
