@@ -1,3 +1,4 @@
+// @todo: extract language type
 (() => {
     if (!document.location.href.startsWith('https://leetcode.com')) {
         alert('not on https://leetcode.com');
@@ -48,4 +49,4 @@
 })();
 
 // how to use this?
-// add to a browser bookmark: add javascrip: to address, then paste the code(not include this comments)
+// add to a browser bookmark: add javascript: to address, then paste the code(not include this comments)
