@@ -34,19 +34,19 @@ class Render(AbstractRender):
         result: str = ""
 
         # include library which could be used, will not be copied to LeetCode
-        includes = ['iostream', 'vector', 'algorithm', 'string', 'map']
+        includes = ['iostream', 'vector', 'algorithm', 'string', 'map', 'set', 'unordered_map']
 
         driver = '''
-        // do not copy lines after this to LeetCode
-        int main() {
-            Solution sol;
-            %s ans;
-            %s;
+// do not copy lines after this to LeetCode
+int main() {
+    Solution sol;
+    %s ans;
+    %s;
 
-            %s;
-            ans = sol.%s(%s);
-            std::cout << ans << std::endl;
-        }
+    %s;
+    ans = sol.%s(%s);
+    std::cout << ans << std::endl;
+}
         ''' % (func_signature.return_type,
                func_signature.gen_parameter_declaration(),
                func_signature.gen_parameter_init(),
@@ -64,8 +64,8 @@ class Render(AbstractRender):
         for include in includes:
             result += "#include <%s>\n" % include
 
-        result += separator + "\n"
         result += "using namespace std;\n"
+        result += separator + "\n"
 
         # base code from LeetCode
         result += self.params["code"]
@@ -80,4 +80,4 @@ class Render(AbstractRender):
     def post_render(self, src_root: Path) -> None:
         # add new executable, example: add_executable(1528_Shuffle_String Easy/1528_Shuffle_String.cpp)
         with open(src_root / Path("CMakeLists.txt"), 'a') as f:
-            f.write("\nadd_executable(%s %s)" % (self.get_file_name(), self.get_file_path()))
+            f.write("\nadd_executable(%s %s)" % (self.get_file_name().split(".")[0], self.get_file_path()))
