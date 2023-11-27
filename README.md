@@ -1,3 +1,8 @@
+## todo
+1. extension -> local server -> files
+2. extension -> filesystem
+3. custom type in this question https://leetcode.com/problems/remove-duplicates-from-sorted-list/
+
 ## What?
 This is a bookmarklet to sync code between LeetCode and a local file.
 
