@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class Render(AbstractRender):
     def extract_func_signature(self) -> FuncSignature:
         # extract function name, return type, parameters
-        match = re.findall("(\w+) (\w+)\((.*)\)", self.params["code"])
+        match = re.findall("([\w\<\>]+) ([\w\<\>]+)\((.*)\)", self.params["code"])
         if not match:
             logger.error("fail to extrac function signature.")
             return FuncSignature('', '', [])
@@ -34,7 +34,7 @@ class Render(AbstractRender):
         result: str = ""
 
         # include library which could be used, will not be copied to LeetCode
-        includes = ['iostream', 'vector', 'algorithm', 'string', 'map', 'set', 'unordered_map']
+        includes = ['iostream', 'vector', 'algorithm', 'string', 'map', 'set', 'unordered_map', 'stack', 'numeric']
 
         driver = '''
 // do not copy lines after this to LeetCode
