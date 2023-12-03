@@ -34,7 +34,7 @@ class Render(AbstractRender):
         result: str = ""
 
         # include library which could be used, will not be copied to LeetCode
-        includes = ['iostream', 'vector', 'algorithm', 'string', 'map', 'set', 'unordered_map', 'stack', 'numeric']
+        includes = ['iostream', 'vector', 'algorithm', 'string', 'map', 'set', 'unordered_map', 'stack', 'numeric', 'queue']
 
         driver = '''
 // do not copy lines after this to LeetCode
