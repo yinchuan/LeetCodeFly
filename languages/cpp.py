@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class Render(AbstractRender):
     def extract_func_signature(self) -> FuncSignature:
         # extract function name, return type, parameters
-        match = re.findall("([\w\<\>]+) ([\w\<\>]+)\((.*)\)", self.params["code"])
+        match = re.findall("([\w\<\>\*]+) ([\w\<\>]+)\((.*)\)", self.params["code"])
         if not match:
             logger.error("fail to extrac function signature.")
             return FuncSignature('', '', [])
@@ -23,7 +23,13 @@ class Render(AbstractRender):
         )
 
     def get_file_name(self) -> str:
-        return self.params["title"].replace('.', '').replace(' ', '_') + ".cpp"
+        return (self.params["title"]
+                .replace(')', '_')
+                .replace('.', '')
+                .replace(' ', '_')
+                .replace(',', '')
+                .replace('(', '_')
+                .replace(')', '_') + ".cpp")
 
     def get_file_path(self) -> Path:
         # put file in <level>/filename
@@ -34,7 +40,9 @@ class Render(AbstractRender):
         result: str = ""
 
         # include library which could be used, will not be copied to LeetCode
-        includes = ['iostream', 'vector', 'algorithm', 'string', 'map', 'set', 'unordered_map', 'stack', 'numeric', 'queue']
+        includes = ['iostream', 'vector', 'algorithm', 'string', 'map', 'set', 'unordered_map', 'stack', 'numeric',
+                    'queue']
+        custom_includes = ["ListNode.h", "TreeNode.h"]
 
         driver = '''
 // do not copy lines after this to LeetCode
@@ -63,6 +71,9 @@ int main() {
         # includes
         for include in includes:
             result += "#include <%s>\n" % include
+
+        for include in custom_includes:
+            result += "#include \"../lib/%s\"\n" % include
 
         result += "using namespace std;\n"
         result += separator + "\n"
