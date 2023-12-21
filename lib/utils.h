@@ -7,14 +7,16 @@
 
 using namespace std;
 
-void print1D(const vector<int> &v) {
+template <class T>
+void print1D(const vector<T> &v) {
     for (const auto entry: v) {
         cout << entry << ", ";
     }
     cout << endl;
 }
 
-void print2D(const vector<vector<int>> &twoD) {
+template <class T>
+void print2D(const vector<vector<T>> &twoD) {
     for(const auto &v: twoD) {
         print1D(v);
     }
