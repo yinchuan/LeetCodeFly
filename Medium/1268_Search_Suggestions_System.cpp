@@ -115,7 +115,7 @@ public:
 //        for(int i = 1; i <= searchWord.length(); i++) {
 //            temp.clear();
 //            string key = searchWord.substr(0, i);
-//            sort(prefix[key].begin(), prefix[key].end());
+//            merge_sort_topdown_recursion(prefix[key].begin(), prefix[key].end());
 //            // get the first three
 //            for(int j = 0; j < min(3, (int)prefix[key].size()); j++) {
 //                temp.push_back(prefix[key][j]);

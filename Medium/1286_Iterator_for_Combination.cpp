@@ -35,25 +35,25 @@ public:
 
     CombinationIterator(string characters, int combinationLength) : chars(characters), k(combinationLength) {
         n = chars.length();
-        limit = ((1 << k) - 1) << k;
+        limit = ((1 << (n-k)) - 1) << k;
     }
 
     string next() {
         if (progress == 0) {
-            progress = (1 << (k - 1)) - 1;
+            progress = (1 << (n - k )) - 1;
             leading = n - k - 1;
             slots = 0;
             current = leading;
             nextBit = current - 1;
         } else {
-            if (current == leading) {
-                progress = (1 << current) + (1 << (k - 2)) - 1;
+            if (current == leading) { // move leading left
                 leading++;
+                progress = (1 << leading) + (1 << (n - k - 1)) - 1; // reset for current round
                 slots++;
                 current = nextBit;
                 nextBit--;
             } else {
-                progress += (1 << current);
+                progress += (1 << current); // move to left for 1 bit
                 current++;
                 if (current - nextBit - 1 >= slots) {
                     current = nextBit;
@@ -77,7 +77,7 @@ public:
     }
 
     bool hasNext() {
-        return progress < limit;
+        return progress <= limit;
     }
 };
 
@@ -92,23 +92,24 @@ public:
 // do not copy lines after this to LeetCode
 int main() {
     string characters = "abcde";
-    int combinationLength = 3;
+    int combinationLength = 2;
     CombinationIterator *obj = new CombinationIterator(characters, combinationLength);
-    obj->next();
-    obj->printProgress();
-    obj->next();
-    obj->printProgress();
-    obj->next();
-    obj->printProgress();
-    obj->next();
-    obj->printProgress();
-    obj->next();
-    obj->printProgress();
-    obj->next();
-    obj->printProgress();
-//    for (int i = 0; i < 20; i++) {
-//        if (!obj->hasNext()) break;
-//        cout << (i+1) << ": " << obj->next() << endl;
-//    }
+//    obj->next();
+//    obj->printProgress();
+//    obj->next();
+//    obj->printProgress();
+//    obj->next();
+//    obj->printProgress();
+//    obj->next();
+//    obj->printProgress();
+//    obj->next();
+//    obj->printProgress();
+//    obj->next();
+//    obj->printProgress();
+    for (int i = 0; i < 20; i++) {
+        if (!obj->hasNext()) break;
+        cout << (i+1) << ": " << obj->next() << endl;
+        obj->printProgress();
+    }
 }
         
