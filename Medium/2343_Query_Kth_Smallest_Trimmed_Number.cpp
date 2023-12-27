@@ -16,67 +16,60 @@
 using namespace std;
 
 //#####
-struct Trimmed {
-    string s;
-    int index;
+class Solution {
+private:
+    vector<string> countingSort(const vector<string> &input, int position) {
+       vector<int> counts(10); // only digits
 
-    Trimmed(const string &s, int index) : s(s), index(index) {}
+       for(const auto &s: input) {
+           counts[s[position]-'0']++;
+       }
 
-    bool operator<(const Trimmed &other) const {
-        if (s == other.s) {
-            return index < other.index;
+       // calculate start index
+       int start = 0;
+       for(int i = 0; i < 10; i++) {
+           int count = counts[i];
+           counts[i] = start;
+           start += count;
+       }
+
+       // put elements to right place
+       vector<string> ret(input.size());
+       for(const auto &s: input) {
+           int key = s[position]-'0';
+           ret[counts[key]] = s;
+           counts[key]++;
+       }
+
+       return ret;
+    }
+
+    vector<string> radixSort(const vector<string> &input, int last) {
+        vector<string> temp = input;
+        for(int i = temp[0].length()-1; i >= last; i--) {
+            temp = countingSort(temp, i);
         }
 
-        return s < other.s;
+        return temp;
     }
-};
 
-class Solution {
 public:
     vector<int> smallestTrimmedNumbers(vector<string> &nums, vector<vector<int>> &queries) {
         ios_base::sync_with_stdio(false);
         vector<int> ans;
+        int n = nums.size();
 
-        int n = nums[0].length();
-        priority_queue<Trimmed> q;
-        vector<int> buckets(10);
-
-        for (const auto &query: queries) {
+        for(const auto &query: queries) {
             int trim = query[1];
             int k = query[0];
 
-            // init
-            for(int i = 0; i < 10; i++) {
-                buckets[i] = 0;
-            }
-            while (!q.empty()) {
-                q.pop();
-            }
-
-            // split to buckets
-            for(const auto &num: nums) {
-                buckets[num[n-trim]-'0']++;
-            }
-
-            int key = 0;
-            for(; key < 10 && k > buckets[key]; key++) {
-                k -= buckets[key];
-            }
-
-            for (int i = 0; i < nums.size(); i++) {
-                if (nums[i][n-trim] != key+'0') continue;
-
-                auto temp = Trimmed(nums[i].substr(n - trim, trim), i);
-                if (q.size() < k) {
-                    q.push(temp);
-                    continue;
-                }
-                if (temp < q.top()) {
-                    q.pop();
-                    q.push(temp);
+            auto sorted = radixSort(nums, nums[0].length()-trim);
+            for(int i = 0; i < n; i++) {
+                if (nums[i] == sorted[k-1]) {
+                    ans.emplace_back(i);
+                    break;
                 }
             }
-            ans.push_back(q.top().index);
         }
 
         return ans;
@@ -91,8 +84,8 @@ int main() {
     vector<string> nums;
     vector<vector<int>> queries;
 
-    nums = {"102","473","251","814"}; queries = {{1,1},{2,3},{4,2},{1,2}}; //Output: {2,2,1,0}
-    nums = {"24","37","96","04"}, queries = {{2,1},{2,2}}; // Output: {3,0}
+    nums = {"102", "473", "251", "814"}; queries = {{1, 1}, {2, 3}, {4, 2}, {1, 2}}; //Output: {2,2,1,0}
+//    nums = {"24", "37", "96", "04"}, queries = {{2, 1}, {2, 2}}; // Output: {3,0}
     ans = sol.smallestTrimmedNumbers(nums, queries);
     print1D(ans);
 }
