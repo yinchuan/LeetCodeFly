@@ -41,7 +41,7 @@ class Render(AbstractRender):
 
         # include library which could be used, will not be copied to LeetCode
         includes = ['iostream', 'vector', 'algorithm', 'string', 'map', 'set', 'unordered_map', 'stack', 'numeric',
-                    'queue']
+                    'queue', 'cmath']
         custom_includes = ["ListNode.h", "TreeNode.h", "utils.h"]
 
         driver = '''
