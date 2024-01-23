@@ -1,22 +1,13 @@
-## todo
-1. extension -> local server -> files
-2. extension -> filesystem
-3. custom type in this question https://leetcode.com/problems/remove-duplicates-from-sorted-list/
+To create a local code file for a LeetCode question and to copy local code to LeetCode for submitting. To be used together with LeetCodeSyncer.
 
-## What?
-This is a bookmarklet to sync code between LeetCode and a local file.
+# known issue
+1. only support linux with `xclip` which is used to operate clipboard.
 
 ## Why?
 Coding in LeetCode is not efficient.
 
-## How?
-### add code to bookmark
+# How?
+LeetCodeSyncer extracts question data from description page and pastes to clipboard. `createFile.py` create a local file using data in clipboard. `upload.py` copy content of a local question to clipboard.
 
-### run
-1. find a question on LeetCode, click the bookmark
-2. if all good, the bookmark puts a json in clipboard
-3. `cd` to where you want to create the code file
-4. run `python createFile.py [paste here]`
-5. if all good, new code file will be in `<level>/<title>.cpp`
+LeetCodeSyncer add two buttons("Download" and "Upload") to LeetCode editor next to "Run" button. "Download" extract question title, level, and given code from a questions description page. Those data are encoded in json and copied to system clipboard. "Upload" button pastes content of clipobard to Leetcode editor.
 
-## issues
