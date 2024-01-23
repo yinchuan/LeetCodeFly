@@ -16,7 +16,7 @@ using namespace std;
 class Solution {
 public:
     int beautifulSubstrings(string s, int k) {
-        // the string must have nk vowels, and nk consonants, so it must be longer than 2n*k, n=1.... len/2k
+        // the string must have nk vowels, and nk consonants, so it must be longer than 2n*k, n=1.... lenOfARun/2k
         // so use sliding window of size 2k, 4k, 8k
 
         int ans = 0;

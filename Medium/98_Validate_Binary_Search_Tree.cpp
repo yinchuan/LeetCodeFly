@@ -46,25 +46,30 @@ private:
 
     bool iterInorder(TreeNode *root) {
         stack<TreeNode *> s;
-        TreeNode *currentMax = nullptr;
-        auto node = root;
-        while (!s.empty() || node != nullptr) {
-            if (node != nullptr) {
-                s.push(node);
-                node = node->left;
-                continue;
-            }
+        pushAllLeft(s, root);
 
-            node = s.top();
+        // key for iterative in-order: always go to right after pop
+        TreeNode *pre = s.top(); // init pre as smallest element, eliminate check pre!=nullptr in loop
+        s.pop();
+        pushAllLeft(s, pre->right); // in case root has no left child
+        while (!s.empty()) {
+            auto node = s.top();
             s.pop();
-            if (currentMax != nullptr && node->val <= currentMax->val) {
+            if (node->val <= pre->val) {
                 return false;
             }
-            currentMax = node;
-            node = node->right;
+            pre = node;
+            pushAllLeft(s, node->right);
         }
 
         return true;
+    }
+
+    void pushAllLeft(stack<TreeNode*> &s, TreeNode *root) {
+        while(root != nullptr) {
+            s.push(root);
+            root = root->left;
+        }
     }
 
 public:
@@ -78,10 +83,10 @@ public:
 
 
         // recursive inorder
-        TreeNode *currentMax = nullptr;
-        return inorder(root, currentMax);
+//        TreeNode *currentMax = nullptr;
+//        return inorder(root, currentMax);
 
-        // return iterInorder(root);
+         return iterInorder(root);
 
     }
 };

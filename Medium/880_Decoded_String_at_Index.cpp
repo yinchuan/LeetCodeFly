@@ -38,7 +38,7 @@ public:
         for (int i = 0; i < s.length();) {
             prevLen = tapeLen;
             len = 0;
-            // scan for a string, -> pos, len, repeatLen
+            // scan for a string, -> pos, lenOfARun, repeatLen
             pos = i;
             while (isLetter(s[i]) && i < s.length()) {
                 len++;
@@ -59,7 +59,7 @@ public:
                     continue;
                 }
 
-                k %= repeatLen; // prev + len
+                k %= repeatLen; // prev + lenOfARun
                 if (k == 0) { // end of current string
                     return string{s[pos + len - 1]};
                 }

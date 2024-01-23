@@ -72,3 +72,6 @@ add_executable(36_Valid_Sudoku Medium/36_Valid_Sudoku.cpp)
 add_executable(1155_Number_of_Dice_Rolls_With_Target_Sum Medium/1155_Number_of_Dice_Rolls_With_Target_Sum.cpp)
 add_executable(454_4Sum_II Medium/454_4Sum_II.cpp)
 add_executable(380_Insert_Delete_GetRandom_O_1_ Medium/380_Insert_Delete_GetRandom_O_1_.cpp)
+
+add_executable(173_Binary_Search_Tree_Iterator Medium/173_Binary_Search_Tree_Iterator.cpp)
+add_executable(1531_String_Compression_II Hard/1531_String_Compression_II.cpp)
