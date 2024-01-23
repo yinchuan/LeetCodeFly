@@ -1,4 +1,4 @@
-To create a local code file for a LeetCode question and to copy local code to LeetCode for submitting. To be used together with LeetCodeSyncer.
+To create a local code file for a LeetCode question and to copy local code to LeetCode for submitting. To be used together with [LeetCodeSyncer](https://github.com/yinchuan/LeetCodesyncer).
 
 # known issue
 1. only support linux with `xclip` which is used to operate clipboard.
